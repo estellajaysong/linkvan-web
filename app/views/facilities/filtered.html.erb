@@ -1,44 +1,44 @@
 
 
 <div role="navigation" class="toggle-group">
-  <div title="filtering options" class="toggle-group-content">
-    <%= render 'breadcrumb' %>
+<div title="filtering options" class="toggle-group-content">
+  <%= render 'breadcrumb' %>
 <div class="container-prox" style="width: 49%;
-                                   display: inline-block;
-                                   min-width:120px;
-                                   text-align: center;">
-  <div class="prox">
-  <div class="btn-group btn-toggle">
-    <p class="prox-toggle"></p>
-    <p class="open-toggle"></p>
-    <button class="btn btn-primary active" id="near" style="border-top-left-radius: 10px; border-bottom-left-radius: 10px">Near</button>
-    <button class="btn btn-default" id="name" style="border-top-right-radius: 10px; border-bottom-right-radius: 10px">A-Z</button>
-  </div>
-  </div>
+                                 display: inline-block;
+                                 min-width:120px;
+                                 text-align: center;">
+<div class="prox">
+<div class="btn-group btn-toggle">
+  <p class="prox-toggle"></p>
+  <p class="open-toggle"></p>
+  <button class="btn btn-primary active" id="near" style="border-top-left-radius: 10px; border-bottom-left-radius: 10px">Near</button>
+  <button class="btn btn-default" id="name" style="border-top-right-radius: 10px; border-bottom-right-radius: 10px">A-Z</button>
+</div>
+</div>
 </div>
 
 <div class="container-open" style="width: 49%;
-                                   display: inline-block;
-                                   min-width: 93px;
-                                   text-align: center;">
-  <div class="open">
-  <div class="btn-group btn-toggle">
-    <button class="btn btn-primary active" id="yes" style="border-top-left-radius: 10px; border-bottom-left-radius: 10px">Open</button>
-    <button class="btn btn-default" id="no" style="border-top-right-radius: 10px; border-bottom-right-radius: 10px">All</button>
-  </div>
-  </div>
+                                 display: inline-block;
+                                 min-width: 93px;
+                                 text-align: center;">
+<div class="open">
+<div class="btn-group btn-toggle">
+  <button class="btn btn-primary active" id="yes" style="border-top-left-radius: 10px; border-bottom-left-radius: 10px">Open</button>
+  <button class="btn btn-default" id="no" style="border-top-right-radius: 10px; border-bottom-right-radius: 10px">All</button>
+</div>
+</div>
 </div>
 
 <!--<div class="pusher" style="float:left; min-width:300px; display:block; width: 50%"></div> -->
 
 <!-- Advanced Search
 <div class="container-search">
-  <div class="options-button">
-  <div class="btn-group btn-toggle">
-    <p><span style="color:white">.</span></p>
-    <%= link_to "Advanced Search", facilities_options_path, class: 'btn btn-default', id: 'options-id' %>
-  </div>
-  </div>
+<div class="options-button">
+<div class="btn-group btn-toggle">
+  <p><span style="color:white">.</span></p>
+  <%= link_to "Advanced Search", facilities_options_path, class: 'btn btn-default', id: 'options-id' %>
+</div>
+</div>
 </div> -->
 
 </div>
@@ -52,32 +52,39 @@
 
 <div id="near-yes">
 <% @facilities_near_yes.each do |f| %>
-  <div class="facility-block">
-    <a class="facility-link" href=<%= facility_path(f)%>>
-      <div class= "facility-block-name">
-        <strong><%= f.name %></strong>
+<div class="facility-block">
+  <a class="facility-link" href=<%= facility_path(f)%>>
+    <div style="display: flex; flex-direction: column">
+      <div style="flex: 1 1 auto; width: 100%">
+        <div class= "facility-block-name">
+          <strong><%= f.name %></strong>
+        </div>
+        <% if willCloseSoon(f) %>
+          <div class="is-close-soon">CLOSING SOON</div>
+        <% else %>
+          <div class="is-open">OPEN</div>
+        <% end %>
+        <%= display_services(f.services) %>
       </div>
-      <% if willCloseSoon(f) %>
-        <div class="is-close-soon">CLOSING SOON</div>
-      <% else %>
-        <div class="is-open">OPEN</div>
-      <% end %>
-      <%= display_services(f.services) %>
-      <i class="glyphicon glyphicon-chevron-right chevron-right-filtered"></i>
-      <% if @coordinates.present? %>
-        <span class="walking-distance">
-          <%= distance_of_time_in_words(@facilities_near_yes_distance[$i]) %> walking
-        </span>
-      <% end %>
-    </a>
-    <% if f.phone.present? %>
-      <div class="facility-phone">
-        Call:
-        <a href="tel:<%=format_tel(f.phone)%>"><%=format_tel(f.phone) %></a>
-      </div>
-    <% end %>
-  </div>
-  <hr>
+      <div style="flex: none">
+        <% if @coordinates.present? %>
+          <span class="walking-distance">
+            <%= distance_of_time_in_words(@facilities_near_yes_distance[$i]) %> walking
+          </span>
+        <% end %>
+    </div>
+  </a>
+
+
+
+  <% if f.phone.present? %>
+    <div class="facility-phone">
+      Call:
+      <a href="tel:<%=format_tel(f.phone)%>"><%=format_tel(f.phone) %></a>
+    </div>
+  <% end %>
+</div>
+<hr>
 <% $i += 1 %>
 <% end %>
 </div>
@@ -86,9 +93,10 @@
 
 <div id="near-no">
 <% @facilities_near_no.each do |f| %>
-  <div class="facility-block">
-    <a class="facility-link" href=<%= facility_path(f)%>>
-      <div class= "facility-block-name">
+<div class="facility-block">
+  <div style="display: flex; flex-direction: row">
+    <div style="flex: 1 1 auto; padding-right: 2rem">
+      <div class= "facility-block-name" style="word-break: break-all">
         <strong><%= f.name %></strong>
       </div>
       <% if willOpenSoon(f) %>
@@ -97,21 +105,61 @@
         <div class="is-closed">CLOSED</div>
       <% end %>
       <%= display_services(f.services) %>
-      <i class="glyphicon glyphicon-chevron-right chevron-right-filtered"></i>
+    </div>
+    <div style="flex: none; padding-right: 2rem">
+      <% if f.phone.present? %>
+        <div>
+          Call:
+          <a href="tel:<%=format_tel(f.phone)%>"><%=format_tel(f.phone) %></a>
+        </div>
+      <% end %>
       <% if @coordinates.present? %>
         <span class="walking-distance">
           <%= distance_of_time_in_words(@facilities_near_no_distance[$i]) %> walking
         </span>
       <% end %>
-    </a>
-    <% if f.phone.present? %>
-      <div class="facility-phone">
-        Call:
-        <a href="tel:<%=format_tel(f.phone)%>"><%=format_tel(f.phone) %></a>
-      </div>
-    <% end %>
+    </div>
+    <!--
+    <i class="glyphicon glyphicon-chevron-right chevron-right-filtered" style="flex: none; display: flex; align-items: center"></i>
+    -->
+    <i class="glyphicon glyphicon-chevron-right chevron-right-filtered" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%)"></i>
   </div>
-  <hr>
+</div>
+<!--
+<div class="facility-block">
+
+  <a class="facility-link" href=<%= facility_path(f)%>>
+    <div style="display: flex; flex-direction: column">
+      <div style="flex: 1 1 auto; width: 100%">
+        <div class= "facility-block-name">
+          <strong><%= f.name %></strong>
+        </div>
+        <% if willOpenSoon(f) %>
+          <div class="is-open-soon">OPENING SOON</div>
+        <% else %>
+          <div class="is-closed">CLOSED</div>
+        <% end %>
+        <%= display_services(f.services) %>
+        <i class="glyphicon glyphicon-chevron-right chevron-right-filtered"></i>
+        <% if @coordinates.present? %>
+          <span class="walking-distance">
+            <%= distance_of_time_in_words(@facilities_near_no_distance[$i]) %> walking
+          </span>
+        <% end %>
+      </div>
+      <div style="flex: none">
+        <% if f.phone.present? %>
+          <div class="facility-phone">
+            Call:
+            <a href="tel:<%=format_tel(f.phone)%>"><%=format_tel(f.phone) %></a>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </a>
+</div>
+<hr>
+-->
 <% $i += 1 %>
 <% end %>
 
@@ -121,32 +169,33 @@
 
 <div id="name-yes">
 <% @facilities_name_yes.each do |f| %>
-  <div class="facility-block">
-    <a class="facility-link" href=<%= facility_path(f)%>>
-      <div class= "facility-block-name">
-        <strong><%= f.name %></strong>
-      </div>
-      <% if willCloseSoon(f) %>
-        <div class="is-close-soon">CLOSING SOON</div>
-      <% else %>
-        <div class="is-open">OPEN</div>
-      <% end %>
-      <%= display_services(f.services) %>
-      <i class="glyphicon glyphicon-chevron-right chevron-right-filtered"></i>
-      <% if @coordinates.present? %>
-        <span class="walking-distance">
-          <%= distance_of_time_in_words(@facilities_name_yes_distance[$i]) %> walking
-        </span>
-      <% end %>
-    </a>
-    <% if f.phone.present? %>
-      <div class="facility-phone">
-        Call:
-        <a href="tel:<%=format_tel(f.phone)%>"><%=format_tel(f.phone) %></a>
-      </div>
+<div class="facility-block">
+<h1>STELL AR</h1>
+  <a class="facility-link" href=<%= facility_path(f)%>>
+    <div class= "facility-block-name">
+      <strong><%= f.name %></strong>
+    </div>
+    <% if willCloseSoon(f) %>
+      <div class="is-close-soon">CLOSING SOON</div>
+    <% else %>
+      <div class="is-open">OPEN</div>
     <% end %>
-  </div>
-  <hr>
+    <%= display_services(f.services) %>
+    <i class="glyphicon glyphicon-chevron-right chevron-right-filtered"></i>
+    <% if @coordinates.present? %>
+      <span class="walking-distance">
+        <%= distance_of_time_in_words(@facilities_name_yes_distance[$i]) %> walking
+      </span>
+    <% end %>
+  </a>
+  <% if f.phone.present? %>
+    <div class="facility-phone">
+      Call:
+      <a href="tel:<%=format_tel(f.phone)%>"><%=format_tel(f.phone) %></a>
+    </div>
+  <% end %>
+</div>
+<hr>
 <% $i += 1 %>
 <% end %>
 </div>
@@ -155,37 +204,38 @@
 
 <div id="name-no">
 <% @facilities_name_no.each do |f| %>
-  <div class="facility-block">
-    <a class="facility-link" href=<%= facility_path(f)%>>
-      <div class= "facility-block-name">
-        <strong><%= f.name %></strong>
-      </div>
-      <% if willOpenSoon(f) %>
-        <div class="is-open-soon">OPENING SOON</div>
-      <% else %>
-        <div class="is-closed">CLOSED</div>
-      <% end %>
-      <%= display_services(f.services) %>
-      <i class="glyphicon glyphicon-chevron-right chevron-right-filtered"></i>
-      <% if @coordinates.present? %>
-        <span class="walking-distance">
-          <%= distance_of_time_in_words(@facilities_name_no_distance[$i]) %> walking
-        </span>
-      <% end %>
-    </a>
-    <% if f.phone.present? %>
-      <div class="facility-phone">
-        Call:
-        <a href="tel:<%=format_tel(f.phone)%>"><%=format_tel(f.phone) %></a>
-      </div>
+<div class="facility-block">
+<h1>YO</h1>
+  <a class="facility-link" href=<%= facility_path(f)%>>
+    <div class= "facility-block-name">
+      <strong><%= f.name %></strong>
+    </div>
+    <% if willOpenSoon(f) %>
+      <div class="is-open-soon">OPENING SOON</div>
+    <% else %>
+      <div class="is-closed">CLOSED</div>
     <% end %>
-  </div>
-  <hr>
+    <%= display_services(f.services) %>
+    <i class="glyphicon glyphicon-chevron-right chevron-right-filtered"></i>
+    <% if @coordinates.present? %>
+      <span class="walking-distance">
+        <%= distance_of_time_in_words(@facilities_name_no_distance[$i]) %> walking
+      </span>
+    <% end %>
+  </a>
+  <% if f.phone.present? %>
+    <div class="facility-phone">
+      Call:
+      <a href="tel:<%=format_tel(f.phone)%>"><%=format_tel(f.phone) %></a>
+    </div>
+  <% end %>
+</div>
+<hr>
 <% $i += 1 %>
 <% end %>
 </div>
 <div id="no-results">
-  <strong>Sorry, no search results found.</strong><br>
+<strong>Sorry, no search results found.</strong><br>
 </div>
 
 </div>
@@ -211,79 +261,79 @@ var noresults = document.getElementById("no-results");
 setTimeout(function(){}, 500);
 
 if ((nearyescheck == 0) && (nearnocheck != 0)){
-  $('.open').find('.btn').toggleClass('active');
-  $('.open').find('.btn').toggleClass('btn-primary');
-  $('.open').find('.btn').toggleClass('btn-default');
-  $('.prox-toggle').toggle();
-  nearyes.style.display = 'none';
-  nearno.style.display = 'block';
-  nameyes.style.display = 'none';
-  nameno.style.display = 'none';
-  nameno.style.display = 'none';
-  noresults.style.display = 'none';
+$('.open').find('.btn').toggleClass('active');
+$('.open').find('.btn').toggleClass('btn-primary');
+$('.open').find('.btn').toggleClass('btn-default');
+$('.prox-toggle').toggle();
+nearyes.style.display = 'none';
+nearno.style.display = 'block';
+nameyes.style.display = 'none';
+nameno.style.display = 'none';
+nameno.style.display = 'none';
+noresults.style.display = 'none';
 }else if ((nearyescheck == 0) && (nearnocheck == 0)){
-  nearyes.style.display = 'none';
-  nearno.style.display = 'none';
-  nameyes.style.display = 'none';
-  nameno.style.display = 'none';
-  noresults.style.display = 'block';
+nearyes.style.display = 'none';
+nearno.style.display = 'none';
+nameyes.style.display = 'none';
+nameno.style.display = 'none';
+noresults.style.display = 'block';
 }else{
-  nearyes.style.display = 'block';
-  nearno.style.display = 'none';
-  nameyes.style.display = 'none';
-  nameno.style.display = 'none';
-  noresults.style.display = 'none';
+nearyes.style.display = 'block';
+nearno.style.display = 'none';
+nameyes.style.display = 'none';
+nameno.style.display = 'none';
+noresults.style.display = 'none';
 }
 
 if ((jssortby == "Near") && (jshours == "All")){
 
-  $('.open').find('.btn').toggleClass('active');
-  $('.open').find('.btn').toggleClass('btn-primary');
-  $('.open').find('.btn').toggleClass('btn-default');
-  $('.prox-toggle').toggle();
+$('.open').find('.btn').toggleClass('active');
+$('.open').find('.btn').toggleClass('btn-primary');
+$('.open').find('.btn').toggleClass('btn-default');
+$('.prox-toggle').toggle();
 
-  nearyes.style.display = 'block';
-  nearno.style.display = 'block';
-  nameyes.style.display = 'none';
-  nameno.style.display = 'none';
-  noresults.style.display = 'none';
+nearyes.style.display = 'block';
+nearno.style.display = 'block';
+nameyes.style.display = 'none';
+nameno.style.display = 'none';
+noresults.style.display = 'none';
 
 }
 
 
 if ((jssortby == "Name") && (jshours == "Open")){
 
-  $('.prox').find('.btn').toggleClass('active');
-  $('.prox').find('.btn').toggleClass('btn-primary');
-  $('.prox').find('.btn').toggleClass('btn-default');
-  $('.open-toggle').toggle();
+$('.prox').find('.btn').toggleClass('active');
+$('.prox').find('.btn').toggleClass('btn-primary');
+$('.prox').find('.btn').toggleClass('btn-default');
+$('.open-toggle').toggle();
 
-  nearyes.style.display = 'none';
-  nearno.style.display = 'none';
-  nameyes.style.display = 'block';
-  nameno.style.display = 'none';
-  noresults.style.display = 'none';
+nearyes.style.display = 'none';
+nearno.style.display = 'none';
+nameyes.style.display = 'block';
+nameno.style.display = 'none';
+noresults.style.display = 'none';
 
 }
 
 
 if ((jssortby == "Name") && (jshours == "All")){
 
-  $('.open').find('.btn').toggleClass('active');
-  $('.open').find('.btn').toggleClass('btn-primary');
-  $('.open').find('.btn').toggleClass('btn-default');
-  $('.prox-toggle').toggle();
+$('.open').find('.btn').toggleClass('active');
+$('.open').find('.btn').toggleClass('btn-primary');
+$('.open').find('.btn').toggleClass('btn-default');
+$('.prox-toggle').toggle();
 
-  $('.prox').find('.btn').toggleClass('active');
-  $('.prox').find('.btn').toggleClass('btn-primary');
-  $('.prox').find('.btn').toggleClass('btn-default');
-  $('.open-toggle').toggle();
+$('.prox').find('.btn').toggleClass('active');
+$('.prox').find('.btn').toggleClass('btn-primary');
+$('.prox').find('.btn').toggleClass('btn-default');
+$('.open-toggle').toggle();
 
-  nearyes.style.display = 'none';
-  nearno.style.display = 'none';
-  nameyes.style.display = 'block';
-  nameno.style.display = 'block';
-  noresults.style.display = 'none';
+nearyes.style.display = 'none';
+nearno.style.display = 'none';
+nameyes.style.display = 'block';
+nameno.style.display = 'block';
+noresults.style.display = 'none';
 
 }
 
@@ -293,64 +343,64 @@ if ((jssortby == "Name") && (jshours == "All")){
 
 
 $('.prox').click(function() {
-    $(this).find('.btn').toggleClass('active');
-    $(this).find('.btn').toggleClass('btn-primary');
-    $(this).find('.btn').toggleClass('btn-default');
+  $(this).find('.btn').toggleClass('active');
+  $(this).find('.btn').toggleClass('btn-primary');
+  $(this).find('.btn').toggleClass('btn-default');
 
-    $('.open-toggle').toggle();
+  $('.open-toggle').toggle();
 
-    if (($('.open-toggle').is(':visible')) && ($('.prox-toggle').is(':visible'))){
-      nearyes.style.display = 'block';
-      nearno.style.display = 'none';
-      nameyes.style.display = 'none';
-      nameno.style.display = 'none';
-    }else if (($('.open-toggle').is(':visible')) && ($('.prox-toggle').is(':hidden'))){
-      nearyes.style.display = 'block';
-      nearno.style.display = 'block';
-      nameyes.style.display = 'none';
-      nameno.style.display = 'none';
-    }else if (($('.open-toggle').is(':hidden')) && ($('.prox-toggle').is(':visible'))){
-      nearyes.style.display = 'none';
-      nearno.style.display = 'none';
-      nameyes.style.display = 'block';
-      nameno.style.display = 'none';
-    }else if (($('.open-toggle').is(':hidden')) && ($('.prox-toggle').is(':hidden'))){
-      nearyes.style.display = 'none';
-      nearno.style.display = 'none';
-      nameyes.style.display = 'block';
-      nameno.style.display = 'block';
-    }
+  if (($('.open-toggle').is(':visible')) && ($('.prox-toggle').is(':visible'))){
+    nearyes.style.display = 'block';
+    nearno.style.display = 'none';
+    nameyes.style.display = 'none';
+    nameno.style.display = 'none';
+  }else if (($('.open-toggle').is(':visible')) && ($('.prox-toggle').is(':hidden'))){
+    nearyes.style.display = 'block';
+    nearno.style.display = 'block';
+    nameyes.style.display = 'none';
+    nameno.style.display = 'none';
+  }else if (($('.open-toggle').is(':hidden')) && ($('.prox-toggle').is(':visible'))){
+    nearyes.style.display = 'none';
+    nearno.style.display = 'none';
+    nameyes.style.display = 'block';
+    nameno.style.display = 'none';
+  }else if (($('.open-toggle').is(':hidden')) && ($('.prox-toggle').is(':hidden'))){
+    nearyes.style.display = 'none';
+    nearno.style.display = 'none';
+    nameyes.style.display = 'block';
+    nameno.style.display = 'block';
+  }
 
 });
 
 $('.open').click(function() {
-    $(this).find('.btn').toggleClass('active');
-    $(this).find('.btn').toggleClass('btn-primary');
-    $(this).find('.btn').toggleClass('btn-default');
+  $(this).find('.btn').toggleClass('active');
+  $(this).find('.btn').toggleClass('btn-primary');
+  $(this).find('.btn').toggleClass('btn-default');
 
-    $('.prox-toggle').toggle();
+  $('.prox-toggle').toggle();
 
-    if (($('.open-toggle').is(':visible')) && ($('.prox-toggle').is(':visible'))){
-      nearyes.style.display = 'block';
-      nearno.style.display = 'none';
-      nameyes.style.display = 'none';
-      nameno.style.display = 'none';
-    }else if (($('.open-toggle').is(':visible')) && ($('.prox-toggle').is(':hidden'))){
-      nearyes.style.display = 'block';
-      nearno.style.display = 'block';
-      nameyes.style.display = 'none';
-      nameno.style.display = 'none';
-    }else if (($('.open-toggle').is(':hidden')) && ($('.prox-toggle').is(':visible'))){
-      nearyes.style.display = 'none';
-      nearno.style.display = 'none';
-      nameyes.style.display = 'block';
-      nameno.style.display = 'none';
-    }else if (($('.open-toggle').is(':hidden')) && ($('.prox-toggle').is(':hidden'))){
-      nearyes.style.display = 'none';
-      nearno.style.display = 'none';
-      nameyes.style.display = 'block';
-      nameno.style.display = 'block';
-    }
+  if (($('.open-toggle').is(':visible')) && ($('.prox-toggle').is(':visible'))){
+    nearyes.style.display = 'block';
+    nearno.style.display = 'none';
+    nameyes.style.display = 'none';
+    nameno.style.display = 'none';
+  }else if (($('.open-toggle').is(':visible')) && ($('.prox-toggle').is(':hidden'))){
+    nearyes.style.display = 'block';
+    nearno.style.display = 'block';
+    nameyes.style.display = 'none';
+    nameno.style.display = 'none';
+  }else if (($('.open-toggle').is(':hidden')) && ($('.prox-toggle').is(':visible'))){
+    nearyes.style.display = 'none';
+    nearno.style.display = 'none';
+    nameyes.style.display = 'block';
+    nameno.style.display = 'none';
+  }else if (($('.open-toggle').is(':hidden')) && ($('.prox-toggle').is(':hidden'))){
+    nearyes.style.display = 'none';
+    nearno.style.display = 'none';
+    nameyes.style.display = 'block';
+    nameno.style.display = 'block';
+  }
 
 });
 
