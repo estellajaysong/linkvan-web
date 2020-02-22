@@ -3,6 +3,8 @@ require 'bigdecimal/util'
 
 class Facility < ActiveRecord::Base
 	belongs_to :user
+	belongs_to :zone
+
 	validates :name, :lat, :long, :services, presence: true
 
 	# is_impressionable
@@ -14,6 +16,24 @@ class Facility < ActiveRecord::Base
 	scope :keywordSearch, ->(word){
 		where(["services ILIKE ? OR welcomes ILIKE ?", "%#{word}%", "%#{word}%"]) unless word == 'all'
 	}
+
+	def managed_by?(user)
+		if user.respond_to? :id
+			f_user_id = user.id
+		else
+			f_user_id = user
+		end
+		# Case Facility's User is the same
+		return true if (this.user_id == f_user_id)
+		# Case Zone of the Facility has the user as admin
+		return true if User.find(f_user_id).manages.any?
+		# Otherwise return FALSE
+		return false
+	end #/managed_by?
+
+	def self.managed_by(user)
+		user.manages
+	end #/owned_by
 
 	def self.search(search)
 		return all if search.empty?
@@ -117,7 +137,7 @@ class Facility < ActiveRecord::Base
 		# Sorts out selected facilities.
 		ret_arr = Array.new
 		if (prox=="Near")
-			ret_arr = selected_facilities.sort{ |f| f.distance(ulat, ulong) }
+			ret_arr = selected_facilities.sort_by{ |f| f.distance(ulat, ulong) }
 		elsif (prox=="Name")
 			ret_arr = selected_facilities.sort_by(&:name)
 		end #/prox == Near, Name
