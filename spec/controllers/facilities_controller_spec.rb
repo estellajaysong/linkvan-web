@@ -101,5 +101,17 @@ RSpec.describe FacilitiesController, type: :request do
       expect(response.body).to include facility_path(id: facility1.id)
     end
   end
+    describe "click a category" do
+    it "should show a list of existing facilities" do
+        get filtered_facilities_path(scope: "Hygiene")
+    end
+  end
+  describe 'click on a facility' do
+    it 'should show facility details' do
+      get facility_path(id: facility1.id)
+      details = ['<h2>Welcomes</h2>', ]
+      expect(response.body).to include 
+    end
+  end
 end
 
